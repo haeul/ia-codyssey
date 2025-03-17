@@ -1,10 +1,11 @@
 import os
 import sys
 
-# 로그 파일 경로
-LOG_FILE = 'mission_computer_main.log'
-PROBLEM_LOG_FILE = 'problem_logs.log'
-REPORT_FILE = 'log_analysis.md'
+# 현재 스크립트가 위치한 디렉토리를 기준으로 경로 설정
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # 현재 파일이 위치한 폴더
+LOG_FILE = os.path.join(BASE_DIR, 'mission_computer_main.log')
+PROBLEM_LOG_FILE = os.path.join(BASE_DIR, 'problem_logs.log')
+REPORT_FILE = os.path.join(BASE_DIR, 'log_analysis.md')
 
 def check_python_installation():
     '''Python 실행 확인'''
@@ -23,11 +24,9 @@ def read_log_file(filename):
         print(f'파일 읽기 오류 발생: {e}')
         sys.exit(1)
 
-def analyze_logs(logs):
-    '''로그 내용을 시간 역순으로 정렬 및 분석'''
-    sorted_logs = sorted(logs, reverse=True)  # 시간 역순 정렬
-    save_problem_logs(sorted_logs)  # 문제 로그 저장
-    return sorted_logs
+def sort_reverse(logs):
+    '''로그 내용을 시간 역순으로 정렬'''
+    return sorted(logs, reverse=True)
 
 def save_problem_logs(logs):
     ''''Mission completed' 이전 로그 저장 중단'''
@@ -42,27 +41,28 @@ def save_problem_logs(logs):
         
     return problem_logs
 
-def write_report(problem_logs):
+def write_report(logs, problem_logs):
     '''로그 분석 결과를 Markdown 보고서로 저장'''
     with open(REPORT_FILE, 'w', encoding='utf-8') as file:
         file.write('# 사고 원인 분석 보고서\n\n')
-        file.write('## 문제 로그\n\n')
+        file.write('## 전체 로그\n\n')
         file.write('```log\n')
-        file.writelines(problem_logs)
+        file.writelines(logs)
         file.write('```\n\n')
         file.write('## 분석 결과\n\n')
-        file.write('사고의 원인은 로그에서 발견된 오류와 관련이 있습니다. 분석 결과:\n\n')
+        file.write('Mission completed 출력 이후를 사고 원인으로 간주.\n\n')
+        file.write('사고 원인 로그:\n')
         for log in problem_logs:
             file.write(f'- {log}')
 
-def main():
-    check_python_installation()
-    logs = read_log_file(LOG_FILE)
-    sorted_logs = analyze_logs(logs)
-    problem_logs = save_problem_logs(sorted_logs)
-    write_report(problem_logs)
-    for log in sorted_logs:
-        print(log.strip())  # 로그 출력
 
-if __name__ == '__main__':
-    main()
+check_python_installation()
+logs = read_log_file(LOG_FILE)
+sorted_logs = sort_reverse(logs)
+problem_logs = save_problem_logs(sorted_logs)
+write_report(logs, problem_logs)
+for log in logs:
+    print(log.strip())  # 로그 출력
+for log in sorted_logs:
+    print(log.strip())  # 로그 역순 출력
+

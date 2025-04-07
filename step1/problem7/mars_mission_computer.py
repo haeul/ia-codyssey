@@ -44,7 +44,6 @@ class MissionComputer:
     def get_sensor_data(self):
         '''센서 데이터 반복 수집 및 출력'''
         print('실행 중입니다. 종료하려면 Enter 키를 누르세요.\n')
-        start_time = time.time()
 
         while True:
             # 센서 값 갱신 및 가져오기
@@ -60,7 +59,6 @@ class MissionComputer:
             if len(self.history) >= 60:
                 self.print_average()
                 self.history.clear()
-                start_time = time.time()
 
             # 5초 동안 사용자 키 입력 체크
             print('5초 대기 중... 종료하려면 Enter를 누르세요.')

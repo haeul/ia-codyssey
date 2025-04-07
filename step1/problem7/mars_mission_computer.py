@@ -53,7 +53,7 @@ class MissionComputer:
 
             # JSON 형식으로 출력
             print('[실시간 환경 정보]')
-            print(json.dumps(self.env_values, indent=4), '\n')
+            print(json.dumps(self.env_values, indent=4), '\n') # dumps : dump string 딕셔너리나 리스트 객체를 JSON 문자열로 변환환
 
             # 5분마다 평균 출력 (5초 x 60 = 300초)
             if len(self.history) >= 60:
@@ -89,8 +89,8 @@ class MissionComputer:
         '''5초 안에 엔터 키가 눌렸는지 확인 (Windows 전용)'''
         start = time.time()
         while time.time() - start < 5:
-            if msvcrt.kbhit():
-                key = msvcrt.getch()
+            if msvcrt.kbhit(): # msvcrt : Microsoft Visual C Runtime의 약자, kbhit : Keyboard hit의 줄임말(키보드에 눌린 키가 있는지 True/False)
+                key = msvcrt.getch() # getch : 사용자가 누른 키 1개를 읽어오는 함수
                 if key == b'\r':  # 엔터 키
                     return True
             time.sleep(0.1)
